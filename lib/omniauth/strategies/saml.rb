@@ -35,6 +35,12 @@ module OmniAuth
         @name_id = response.name_id
         @attributes = response.attributes
 
+        # Handle attribute fallback if needed
+        if (@name_id.nil? || @name_id.empty?) && options[:name_identifier_fallback_attribute]
+          @name_id ||= @attributes[options[:name_identifier_fallback_attribute]]
+        end
+
+        # Handle when no NameID could be found
         if @name_id.nil? || @name_id.empty?
           raise OmniAuth::Strategies::SAML::ValidationError.new("SAML response missing 'name_id'")
         end

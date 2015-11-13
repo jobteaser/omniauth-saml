@@ -88,6 +88,9 @@ The service provider metadata used to ease configuration of the SAML SP in the I
   If not specified, the IdP is free to choose the name identifier format used
   in the response. Optional.
 
+* `:name_identifier_fallback_attribute` - For SAML calls with an `unspecified` name-id format. If no
+  nameID is found in the SAML payload, this defines the attribute name to fallback on. Optional
+
 * See the `OneLogin::RubySaml::Settings` class in the [Ruby SAML gem](https://github.com/onelogin/ruby-saml) for additional supported options.
 
 ## Authors
