@@ -45,7 +45,7 @@ module OmniAuth
           raise OmniAuth::Strategies::SAML::ValidationError.new("SAML response missing 'name_id'")
         end
 
-        response.validate!
+        raise OneLogin::RubySaml::ValidationError, response.errors unless response.is_valid?
 
         super
       rescue OmniAuth::Strategies::SAML::ValidationError
