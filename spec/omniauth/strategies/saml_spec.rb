@@ -16,8 +16,8 @@ describe OmniAuth::Strategies::SAML, :type => :strategy do
   let(:auth_hash){ last_request.env['omniauth.auth'] }
   let(:saml_options) do
     {
-      :assertion_consumer_service_url     => "http://localhost:3000/auth/saml/callback",
-      :issuer                             => "https://saml.issuer.url/issuers/29490",
+      :assertion_consumer_service_url     => "http://localhost:9080/auth/saml/callback",
+      :issuer                             => "sample-saml-strategy",
       :idp_sso_target_url                 => "https://idp.sso.target_url/signon/29490",
       :idp_cert_fingerprint               => "C1:59:74:2B:E8:0C:6C:A9:41:0F:6E:83:F6:D1:52:25:45:58:89:FB",
       :idp_sso_target_url_runtime_params  => {:original_param_key => :mapped_param_key},
