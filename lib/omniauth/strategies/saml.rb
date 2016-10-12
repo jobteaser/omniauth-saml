@@ -34,6 +34,7 @@ module OmniAuth
 
         @name_id = response.name_id
         @attributes = response.attributes
+        @session_index = response.sessionindex
 
         # Handle attribute fallback if needed
         if (@name_id.nil? || @name_id.empty?) && options[:name_identifier_fallback_attribute]
@@ -80,6 +81,8 @@ module OmniAuth
       end
 
       extra { { :raw_info => @attributes } }
+
+      credentials { { sessionindex: @session_index } }
     end
   end
 end
