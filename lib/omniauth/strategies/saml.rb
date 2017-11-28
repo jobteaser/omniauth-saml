@@ -8,6 +8,9 @@ module OmniAuth
 
       option :name_identifier_format, nil
       option :idp_sso_target_url_runtime_params, {}
+      option :attribute_service_name, 'Required attributes'
+      option :assertion_consumer_service_url, "http://localhost:9080/auth/saml/callback"
+      option :request_attributes, []
 
       def request_phase
         options[:assertion_consumer_service_url] ||= callback_url
@@ -61,12 +64,29 @@ module OmniAuth
           @env['omniauth.strategy'] ||= self
           setup_phase
 
-          response = OneLogin::RubySaml::Metadata.new
-          settings = OneLogin::RubySaml::Settings.new(options)
-          Rack::Response.new(response.generate(settings), 200, { "Content-Type" => "application/xml" }).finish
+          with_settings do |settings|
+            response = OneLogin::RubySaml::Metadata.new
+            add_request_attributes_to(settings) if options.request_attributes.length > 0
+
+            Rack::Response.new(response.generate(settings), 200, { "Content-Type" => "application/xml" }).finish
+          end
         else
           call_app!
         end
+      end
+
+      def add_request_attributes_to(settings)
+        settings.attribute_consuming_service.service_name options.attribute_service_name
+        settings.issuer = options.issuer
+
+        options.request_attributes.each do |attribute|
+          settings.attribute_consuming_service.add_attribute attribute
+        end
+      end
+
+      def with_settings
+        options[:assertion_consumer_service_url] ||= callback_url
+        yield OneLogin::RubySaml::Settings.new(options)
       end
 
       uid { @name_id }
