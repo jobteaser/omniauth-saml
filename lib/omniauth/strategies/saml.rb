@@ -62,11 +62,20 @@ module OmniAuth
           setup_phase
 
           response = OneLogin::RubySaml::Metadata.new
-          settings = OneLogin::RubySaml::Settings.new(options)
+          settings = build_settings(options)
           Rack::Response.new(response.generate(settings), 200, { "Content-Type" => "application/xml" }).finish
         else
           call_app!
         end
+      end
+
+      def build_settings(options)
+        settings = OneLogin::RubySaml::Settings.new(options)
+        settings.attribute_consuming_service.configure do
+          service_name(options.attribute_service_name)
+          service_description(options.attribute_service_description)
+        end
+        settings
       end
 
       uid { @name_id }
